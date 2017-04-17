@@ -1,0 +1,6 @@
+framework module Pods_XMGTV {
+  umbrella header "Pods-XMGTV-umbrella.h"
+
+  export *
+  module * { export * }
+}

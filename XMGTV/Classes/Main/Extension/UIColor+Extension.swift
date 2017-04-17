@@ -12,7 +12,7 @@ extension UIColor {
     // 创建对象时，有参数使用便利构造器。每餐是直接使用类方法
     
     convenience init(r: CGFloat, g: CGFloat, b: CGFloat, alpha: CGFloat = 1.0) {
-        self.init(red: r, green: g, blue: b, alpha: alpha)
+        self.init(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: 1.0)
     }
     
     
@@ -53,5 +53,27 @@ extension UIColor {
     
     class func randomColor() -> UIColor {
         return UIColor(r: CGFloat(arc4random_uniform(256)), g: CGFloat(arc4random_uniform(256)), b: CGFloat(arc4random_uniform(256)))
+    }
+    
+    class func getRGBDelta(firstColor: UIColor, secondColor: UIColor) -> (CGFloat, CGFloat, CGFloat) {
+        // 获得颜色的rgba值
+        guard let fisrstRGB = firstColor.cgColor.components else {
+            fatalError()
+        }
+        
+        guard let secondColor = secondColor.cgColor.components else {
+            fatalError()
+        }
+        return ((fisrstRGB[0] - secondColor[0])*255.0,
+                (fisrstRGB[1] - secondColor[1])*255.0,
+                (fisrstRGB[2] - secondColor[2])*255.0)
+    }
+    
+    func getRGB() -> (CGFloat, CGFloat, CGFloat) {
+        // 获得颜色的rgba值
+        guard let fisrstRGB = self.cgColor.components else {
+            fatalError()
+        }
+        return (fisrstRGB[0] * 255.0, fisrstRGB[1] * 255.0, fisrstRGB[2] * 255.0)
     }
 }

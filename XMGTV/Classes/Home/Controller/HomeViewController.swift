@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        automaticallyAdjustsScrollViewInsets = false
         setupUI()
     }
 }
@@ -19,6 +20,22 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     fileprivate func setupUI() {
         setupNavigation()
+        setupContentView()
+    }
+    
+    private func setupContentView() {
+        let homeTypes = loadAnchorTypeData()
+        
+        let pageFrame = CGRect(x: 0, y: kNavigationBarH + kStatusBarH, width: kScreenW, height: kScreenH - kNavigationBarH - kStatusBarH - 44)
+        let titles = homeTypes.map({$0.title})
+        var childVCs = [AnchorViewController]()
+        for type in homeTypes {
+            let anchorVC = AnchorViewController()
+            anchorVC.homeType = type
+            childVCs.append(anchorVC)
+        }
+        let pageView = PageView(frame: pageFrame, titles: titles, childViewControllers: childVCs, parentViewController: self)
+        view.addSubview(pageView)
     }
     
     private func setupNavigation() {
@@ -39,6 +56,18 @@ extension HomeViewController {
         
         let searchFiled = searchBar.value(forKey: "_searchField") as? UITextField
         searchFiled?.textColor = UIColor.white
+    }
+    
+    fileprivate func loadAnchorTypeData() -> [HomeType] {
+
+        guard let path = Bundle.main.path(forResource: "types", ofType: ".plist"), let dataArray = NSArray(contentsOfFile: path) as? [[String : Any]] else {
+            return [HomeType]()
+        }
+        var tempArray = [HomeType]()
+        for dic in dataArray {
+            tempArray.append(HomeType(dict: dic))
+        }
+        return tempArray
     }
     
     @objc private func collectItemClick() {
